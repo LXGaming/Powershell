@@ -1,0 +1,90 @@
+Write-Host "LX's Wallpaper Script Has Been Started" -foregroundcolor green
+Write-Host ""
+
+$Dir = "D:\Wallpaper"
+
+$A = "$Dir\1.jpg"
+$B = "$Dir\2.jpg"
+$C = "$Dir\3.jpg"
+$D = "$Dir\4.jpg"
+$E = "$Dir\5.jpg"
+
+
+while($true)
+{
+
+//Start Of Wallpaper Change
+
+Function Set-WallPaper($Value)
+{
+ Set-ItemProperty -path 'HKCU:\Control Panel\Desktop\' -name wallpaper -value $value
+ rundll32.exe user32.dll, UpdatePerUserSystemParameters
+}
+Set-WallPaper -value $A
+Set-WallPaper -value $A
+Set-WallPaper -value $A
+Set-WallPaper -value $A
+Set-WallPaper -value $A
+Write-Host "Wallpaper A Has Been Changed" -foregroundcolor green
+Start-Sleep -s 10
+
+//Start Of Wallpaper Change
+
+Function Set-WallPaper($Value)
+{
+ Set-ItemProperty -path 'HKCU:\Control Panel\Desktop\' -name wallpaper -value $value
+ rundll32.exe user32.dll, UpdatePerUserSystemParameters
+}
+Set-WallPaper -value $B
+Set-WallPaper -value $B
+Set-WallPaper -value $B
+Set-WallPaper -value $B
+Set-WallPaper -value $B
+Write-Host "Wallpaper B Has Been Changed" -foregroundcolor green
+Start-Sleep -s 10
+
+//Start Of Wallpaper Change
+
+Function Set-WallPaper($Value)
+{
+ Set-ItemProperty -path 'HKCU:\Control Panel\Desktop\' -name wallpaper -value $value
+ rundll32.exe user32.dll, UpdatePerUserSystemParameters
+}
+Set-WallPaper -value $C
+Set-WallPaper -value $C
+Set-WallPaper -value $C
+Set-WallPaper -value $C
+Set-WallPaper -value $C
+Write-Host "Wallpaper C Has Been Changed" -foregroundcolor green
+Start-Sleep -s 10
+
+//Start Of Wallpaper Change
+
+Function Set-WallPaper($Value)
+{
+ Set-ItemProperty -path 'HKCU:\Control Panel\Desktop\' -name wallpaper -value $value
+ rundll32.exe user32.dll, UpdatePerUserSystemParameters
+}
+Set-WallPaper -value $D
+Set-WallPaper -value $D
+Set-WallPaper -value $D
+Set-WallPaper -value $D
+Set-WallPaper -value $D
+Write-Host "Wallpaper D Has Been Changed" -foregroundcolor green
+Start-Sleep -s 10
+
+//Start Of Wallpaper Change
+
+Function Set-WallPaper($Value)
+{
+ Set-ItemProperty -path 'HKCU:\Control Panel\Desktop\' -name wallpaper -value $value
+ rundll32.exe user32.dll, UpdatePerUserSystemParameters
+}
+Set-WallPaper -value $E
+Set-WallPaper -value $E
+Set-WallPaper -value $E
+Set-WallPaper -value $E
+Set-WallPaper -value $E
+Write-Host "Wallpaper E Has Been Changed" -foregroundcolor green
+Start-Sleep -s 10
+}

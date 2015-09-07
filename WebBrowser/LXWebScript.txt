@@ -1,0 +1,146 @@
+# Script Start
+#
+# Welcome To Alex Thomson Web Browser Built Using Powershell
+#
+
+# Assembly Start
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+# Assembly End
+
+$LXLoop = 0
+while($LXLoop -ne 1) {
+$LXLoop++
+$LXFolderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+$LXFolderBrowser.ShowDialog()
+$LXFileLocation = $LXFolderBrowser.SelectedPath
+}
+
+# Reference Start
+$LXWebForm = New-Object 'System.Windows.Forms.Form'
+$LXWebIcon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
+$LXWebFont = New-Object System.Drawing.Font("Times New Roman","10",[System.Drawing.FontStyle]::Regular)
+$LXWebImage = [System.Drawing.Image]::FromFile("$LXFileLocation\LXBackground01.jpg")
+    # Font styles are: Regular, Bold, Italic, Underline, Strikeout
+$LXURLTextBox = New-Object System.Windows.Forms.TextBox
+$LXBackButton = New-Object System.Windows.Forms.Button
+$LXBackImage = [System.Drawing.Image]::FromFile("$LXFileLocation\LXBack.png")
+$LXBackButton_Click = 
+{
+    $LXWebBrowser.GoBack()
+}
+$LXForwardButton = New-Object System.Windows.Forms.Button
+$LXForwardImage = [System.Drawing.Image]::FromFile("$LXFileLocation\LXForward.png")
+$LXForwardButton_Click =
+{
+    $LXWebBrowser.GoForward()
+}
+$LXRefreshButton = New-Object System.Windows.Forms.Button
+$LXRefreshImage = [System.Drawing.Image]::FromFile("$LXFileLocation\LXRefresh.png")
+$LXRefreshButton_Click = 
+{
+    $LXWebBrowser.Refresh()
+}
+$LXWebLine = New-Object Drawing.Pen "#0783C3"
+$LXWebBrowser = New-Object System.Windows.Forms.WebBrowser
+# Reference End
+
+# LXWebForm Build Start
+$LXWebForm.Text = "LX Web"
+$LXWebForm.Icon = $LXWebIcon
+$LXWebForm.Font = $LXWebFont
+$LXWebForm.ClientSize = '1280, 755'
+$LXWebForm.StartPosition = "CenterScreen"
+$LXWebForm.FormBorderStyle = "FixedDialog"
+$LXWebForm.MaximizeBox = $False
+$LXWebForm.MinimizeBox = $False
+$LXWebForm.BackColor = "DarkGray"
+
+    # None, Tile, Center, Stretch, Zoom
+# LXWebForm Build End
+
+# KeyEvent Start
+$LXWebForm.KeyPreview = $True
+$LXWebForm.Add_KeyDown({if ($_.KeyCode -eq "Enter") 
+    {$LXWebBrowser.URL = $LXURLTextBox.Text;}})
+$LXWebForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") 
+    {$LXWebForm.Close()}})
+# KeyEvent End
+
+# LXURLTextBox Build Start
+$LXURLTextBox.Location = New-Object System.Drawing.Size(80,6)
+$LXURLTextBox.Width = "1155"
+$LXURLTextBox.Text = $URL
+# LXURLTextBox Build End
+
+# LXBackButton Build Start
+$LXBackButton.Location = New-Object System.Drawing.Size(0,0)
+$LXBackButton.Size = New-Object System.Drawing.Size(35,35)
+$LXBackButton.FlatAppearance.BorderSize = "0"
+$LXBackButton.BackColor = "Transparent"
+$LXBackButton.FlatStyle = "Flat"
+$LXBackButton.BackgroundImage = $LXBackImage
+$LXBackButton.BackgroundImageLayout = "Stretch"
+$LXBackButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXBackButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXBackButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXBackButton.Add_Click($LXBackButton_Click)
+# LXBackButton Build End
+
+# LXForwardButton Build Start
+$LXForwardButton.Location = New-Object System.Drawing.Size(35,0)
+$LXForwardButton.Size = New-Object System.Drawing.Size(35,35)
+$LXForwardButton.FlatAppearance.BorderSize = "0"
+$LXForwardButton.BackColor = "Transparent"
+$LXForwardButton.FlatStyle = "Flat"
+$LXForwardButton.BackgroundImage = $LXForwardImage
+$LXForwardButton.BackgroundImageLayout = "Stretch"
+$LXForwardButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXForwardButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXForwardButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXForwardButton.Add_Click($LXForwardButton_Click)
+# LXForwardButton Build End
+
+# LXForwardButton Build Start
+$LXRefreshButton.Location = New-Object System.Drawing.Size(1245,0)
+$LXRefreshButton.Size = New-Object System.Drawing.Size(35,35)
+$LXRefreshButton.FlatAppearance.BorderSize = "0"
+$LXRefreshButton.BackColor = "Transparent"
+$LXRefreshButton.FlatStyle = "Flat"
+$LXRefreshButton.BackgroundImage = $LXRefreshImage
+$LXRefreshButton.BackgroundImageLayout = "Stretch"
+$LXRefreshButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXRefreshButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXRefreshButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXRefreshButton.Add_Click($LXRefreshButton_Click)
+# LXForwardButton Build End
+
+# LXWebLine Build Start
+$LXWebGraphics = $LXWebForm.CreateGraphics()
+$LXWebLine.Width = 3
+$LXWebForm.Add_Paint({$LXWebGraphics.DrawLine($LXWebLine,0,37,1280,37)})
+#LXWebLine Build End
+
+# LXWebBrowser Build Start
+$LXWebBrowser.IsWebBrowserContextMenuEnabled = $true
+$LXWebBrowser.URL = $URL
+$LXWebBrowser.Width = 1280
+$LXWebBrowser.CanGoBack
+$LXWebBrowser.CanGoForward
+$LXWebBrowser.Height = 720
+$LXWebBrowser.Location = "0, 40"
+# LXWebBrowser Build End
+
+# Control Start
+$LXWebForm.Controls.Add($LXURLTextBox)
+$LXWebForm.Controls.Add($LXBackButton)
+$LXWebForm.Controls.Add($LXForwardButton)
+$LXWebForm.Controls.Add($LXRefreshButton)
+$LXWebForm.Controls.Add($LXWebBrowser)
+# Control End
+
+# ShowDialog Start
+$LXWebForm.ShowDialog()
+# ShowDialog End
+
+#Script End

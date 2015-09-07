@@ -1,0 +1,14 @@
+https://social.technet.microsoft.com/Forums/windows/en-US/72a9b4bf-071b-47cd-877d-0c0629a9eb90/how-change-the-wallpaperbackground-with-a-command-line-?forum=w7itproui
+
+Function Set-WallPaper($Value)
+{
+ Set-ItemProperty -path 'HKCU:\Control Panel\Desktop\' -name wallpaper -value $value
+ rundll32.exe user32.dll, UpdatePerUserSystemParameters
+}
+
+
+Set-WallPaper -value "E:\Wallpaper\New.jpg"
+Set-WallPaper -value "E:\Wallpaper\New.jpg"
+Set-WallPaper -value "E:\Wallpaper\New.jpg"
+Set-WallPaper -value "E:\Wallpaper\New.jpg"
+Set-WallPaper -value "E:\Wallpaper\New.jpg"
