@@ -1,0 +1,161 @@
+# LXCryptography Start
+
+# Add-Type Start
+Add-Type -AssemblyName System.Windows.Forms
+# Add-Type End
+
+# Reference Start
+$LXCryptographyForm = New-Object System.Windows.Forms.Form
+$LXCryptographyIcon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
+$LXCryptographyFont = New-Object System.Drawing.Font("Times New Roman","10",[System.Drawing.FontStyle]::Regular)
+# Font styles are: Regular, Bold, Italic, Underline, Strikeout
+$UTF8 = New-Object -TypeName System.Text.UTF8Encoding
+$LXFileBrowser = New-Object System.Windows.Forms.OpenFileDialog
+$AlgorithmNames = @("SHA1","SHA256","SHA384","SHA512","MD5")
+$LXAlgorithmBox = New-Object System.Windows.Forms.ComboBox
+$LXStringHashTextBox = New-Object System.Windows.Forms.TextBox
+$LXStringHashButton = New-Object System.Windows.Forms.Button
+$LXFileHashTextBox = New-Object System.Windows.Forms.TextBox
+$LXFileHashButton = New-Object System.Windows.Forms.Button
+$LXOutputTextBox = New-Object System.Windows.Forms.TextBox
+$LXOutputButton = New-Object System.Windows.Forms.Button
+$SHA1 = New-Object -TypeName System.Security.Cryptography.SHA1CryptoServiceProvider
+$SHA256 = New-Object -TypeName System.Security.Cryptography.SHA256CryptoServiceProvider
+$SHA384 = New-Object -TypeName System.Security.Cryptography.SHA384CryptoServiceProvider
+$SHA512 = New-Object -TypeName System.Security.Cryptography.SHA512CryptoServiceProvider
+$MD5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+# Reference End
+
+# Event Start
+$LXStringHashButton_Click = {
+If($LXAlgorithmBox.SelectedItem -match "SHA1"){$Hash = [System.BitConverter]::ToString($SHA1.ComputeHash($UTF8.GetBytes($LXStringHashTextBox.Text)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "SHA256"){$Hash = [System.BitConverter]::ToString($SHA256.ComputeHash($UTF8.GetBytes($LXStringHashTextBox.Text)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "SHA384"){$Hash = [System.BitConverter]::ToString($SHA384.ComputeHash($UTF8.GetBytes($LXStringHashTextBox.Text)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "SHA512"){$Hash = [System.BitConverter]::ToString($SHA512.ComputeHash($UTF8.GetBytes($LXStringHashTextBox.Text)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "MD5"){$Hash = [System.BitConverter]::ToString($MD5.ComputeHash($UTF8.GetBytes($LXStringHashTextBox.Text)))}
+else{$LXOutputTextBox.Text = "Error"}
+$LXOutputTextBox.Text = $Hash -replace "-", ""
+}
+$LXFileHashButton_Click = {
+$LXFileBrowser.ShowDialog()
+$LXFileHashTextBox.Text = $LXFileBrowser.FileName
+If($LXAlgorithmBox.SelectedItem -match "SHA1"){$Hash = [System.BitConverter]::ToString($SHA1.ComputeHash([System.IO.File]::ReadAllBytes($LXFileBrowser.FileName)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "SHA256"){$Hash = [System.BitConverter]::ToString($SHA256.ComputeHash([System.IO.File]::ReadAllBytes($LXFileBrowser.FileName)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "SHA384"){$Hash = [System.BitConverter]::ToString($SHA384.ComputeHash([System.IO.File]::ReadAllBytes($LXFileBrowser.FileName)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "SHA512"){$Hash = [System.BitConverter]::ToString($SHA512.ComputeHash([System.IO.File]::ReadAllBytes($LXFileBrowser.FileName)))}
+elseIf($LXAlgorithmBox.SelectedItem -match "MD5"){$Hash = [System.BitConverter]::ToString($MD5.ComputeHash([System.IO.File]::ReadAllBytes($LXFileBrowser.FileName)))}
+else{$LXOutputTextBox.Text = "Error"}
+$LXOutputTextBox.Text = $Hash -replace "-", ""
+}
+$LXOutputButton_Click = {
+$LXOutputTextBox.Text | clip
+$LXOutputTextBox.Text = "Copied ~ " + $Hash -replace "-", ""
+}
+# KeyEvent Start
+$LXCryptographyForm.KeyPreview = $True
+$LXCryptographyForm.Add_KeyDown({if ($_.KeyCode -eq "Enter") {}})
+$LXCryptographyForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXCryptographyForm.Close();}})
+# KeyEvent End
+# Event End
+
+# LXCryptographyForm Start
+$LXCryptographyForm.Text = "LXCryptography"
+$LXCryptographyForm.Icon = $LXCryptographyIcon
+$LXCryptographyForm.Font = $LXCryptographyFont
+$LXCryptographyForm.ClientSize = "500, 130"
+$LXCryptographyForm.StartPosition = "CenterScreen"
+$LXCryptographyForm.FormBorderStyle = "Sizable"
+$LXCryptographyForm.MaximizeBox = $False
+$LXCryptographyForm.MinimizeBox = $False
+$LXCryptographyForm.BackColor = "DarkGray"
+# LXCryptographyForm End
+
+# LXAlgorithmBox Start
+$LXAlgorithmBox.Location = New-Object System.Drawing.Point(5, 5)
+$LXAlgorithmBox.Size = New-Object System.Drawing.Size(100, 100)
+$LXAlgorithmBox.Anchor = "Top, Left"
+$LXAlgorithmBox.Text = "Algorithms"
+foreach($Algorithm in $AlgorithmNames)
+{
+  $LXAlgorithmBox.Items.add($Algorithm)
+}
+# LXAlgorithmBox End
+
+# LXStringHashTextBox Start
+$LXStringHashTextBox.Location = New-Object System.Drawing.Size(5,35)
+$LXStringHashTextBox.Size = New-Object System.Drawing.Size(400,0)
+$LXStringHashTextBox.Anchor = "Top, Left, Right"
+$LXStringHashTextBox.Text = "StringHash"
+# LXStringHashTextBox End
+
+# LXStringHashButton Start
+$LXStringHashButton.Location = New-Object System.Drawing.Size(425,35)
+$LXStringHashButton.Size = New-Object System.Drawing.Size(70,25)
+$LXStringHashButton.Anchor = "Top, Right"
+$LXStringHashButton.Text = "TextHash"
+$LXStringHashButton.FlatAppearance.BorderSize = "0"
+$LXStringHashButton.BackColor = "LightGreen"
+$LXStringHashButton.FlatStyle = "Flat"
+$LXStringHashButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXStringHashButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXStringHashButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXStringHashButton.Add_Click($LXStringHashButton_Click)
+# LXStringHashButton End
+
+# LXFileHashTextBox Start
+$LXFileHashTextBox.Location = New-Object System.Drawing.Size(5,70)
+$LXFileHashTextBox.Size = New-Object System.Drawing.Size(400,0)
+$LXFileHashTextBox.Anchor = "Top, Left, Right"
+$LXFileHashTextBox.Text = "FileHash"
+# LXFileHashTextBox End
+
+# LXFileHashButton Start
+$LXFileHashButton.Location = New-Object System.Drawing.Size(425,70)
+$LXFileHashButton.Size = New-Object System.Drawing.Size(70,25)
+$LXFileHashButton.Anchor = "Top, Right"
+$LXFileHashButton.Text = "FileHash"
+$LXFileHashButton.FlatAppearance.BorderSize = "0"
+$LXFileHashButton.BackColor = "LightGreen"
+$LXFileHashButton.FlatStyle = "Flat"
+$LXFileHashButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXFileHashButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXFileHashButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXFileHashButton.Add_Click($LXFileHashButton_Click)
+# LXFileHashButton End
+
+# LXOutputTextBox Start
+$LXOutputTextBox.Location = New-Object System.Drawing.Size(5,100)
+$LXOutputTextBox.Size = New-Object System.Drawing.Size(400,0)
+$LXOutputTextBox.Anchor = "Bottom, Left, Right"
+$LXOutputTextBox.Text = "Output"
+# LXOutputTextBox End
+
+# LXOutputButton Start
+$LXOutputButton.Location = New-Object System.Drawing.Size(425,100)
+$LXOutputButton.Size = New-Object System.Drawing.Size(70,25)
+$LXOutputButton.Anchor = "Bottom, Right"
+$LXOutputButton.Text = "Copy"
+$LXOutputButton.FlatAppearance.BorderSize = "0"
+$LXOutputButton.BackColor = "LightGreen"
+$LXOutputButton.FlatStyle = "Flat"
+$LXOutputButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXOutputButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXOutputButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXOutputButton.Add_Click($LXOutputButton_Click)
+# LXOutputButton End
+
+# Control Start
+$LXCryptographyForm.Controls.Add($LXAlgorithmBox)
+$LXCryptographyForm.Controls.Add($LXStringHashTextBox)
+$LXCryptographyForm.Controls.Add($LXStringHashButton)
+$LXCryptographyForm.Controls.Add($LXFileHashTextBox)
+$LXCryptographyForm.Controls.Add($LXFileHashButton)
+$LXCryptographyForm.Controls.Add($LXOutputTextBox)
+$LXCryptographyForm.Controls.Add($LXOutputButton)
+# Control End
+
+# ShowDialog Start
+$LXCryptographyForm.ShowDialog()
+# ShowDialog End
+
+# LXCryptography End
