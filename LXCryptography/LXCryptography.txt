@@ -45,11 +45,12 @@ elseIf($LXAlgorithmBox.SelectedItem -match "SHA384"){$Hash = [System.BitConverte
 elseIf($LXAlgorithmBox.SelectedItem -match "SHA512"){$Hash = [System.BitConverter]::ToString($SHA512.ComputeHash([System.IO.File]::ReadAllBytes($LXFileBrowser.FileName)))}
 elseIf($LXAlgorithmBox.SelectedItem -match "MD5"){$Hash = [System.BitConverter]::ToString($MD5.ComputeHash([System.IO.File]::ReadAllBytes($LXFileBrowser.FileName)))}
 else{$LXOutputTextBox.Text = "Error"}
-$LXOutputTextBox.Text = $Hash -replace "-", ""
+$LXOutputTextBox.Text = "Copied - " + $LXOutputTextBox.Text
 }
 $LXOutputButton_Click = {
+$Output = $LXOutputTextBox.Text
 $LXOutputTextBox.Text | clip
-$LXOutputTextBox.Text = "Copied ~ " + $Hash -replace "-", ""
+$LXOutputTextBox.Text = "Copied ~ $Output"
 }
 # KeyEvent Start
 $LXCryptographyForm.KeyPreview = $True
