@@ -1,0 +1,127 @@
+# LXBase64Cryptography Start
+
+# Add-Type Start
+Add-Type -AssemblyName System.Windows.Forms
+# Add-Type End
+
+# Reference Start
+$LXBase64CryptographyForm = New-Object System.Windows.Forms.Form
+$LXBase64CryptographyIcon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
+$LXBase64CryptographyFont = New-Object System.Drawing.Font("Times New Roman","10",[System.Drawing.FontStyle]::Regular)
+# Font styles are: Regular, Bold, Italic, Underline, Strikeout
+$UTF8 = New-Object -TypeName System.Text.UTF8Encoding
+$LXEncodeTextBox = New-Object System.Windows.Forms.TextBox
+$LXEncodeButton = New-Object System.Windows.Forms.Button
+$LXDecodeTextBox = New-Object System.Windows.Forms.TextBox
+$LXDecodeButton = New-Object System.Windows.Forms.Button
+$LXOutputTextBox = New-Object System.Windows.Forms.TextBox
+$LXOutputButton = New-Object System.Windows.Forms.Button
+# Reference End
+
+# Event Start
+$LXEncodeButton_Click = {$Bytes = $UTF8.GetBytes($LXEncodeTextBox.Text); $Hash = [System.Convert]::ToBase64String($Bytes);
+$LXOutputTextBox.Text = $Hash -replace "-", ""}
+$LXDecodeButton_Click = {$Bytes = [System.Convert]::FromBase64String($LXDecodeTextBox.Text); $Hash = $UTF8.GetString($Bytes);
+$LXOutputTextBox.Text = $Hash -replace "-", ""}
+$LXOutputButton_Click = {
+$Output = $LXOutputTextBox.Text
+$LXOutputTextBox.Text | clip
+$LXOutputTextBox.Text = "Copied ~ $Output"
+}
+
+# KeyEvent Start
+$LXBase64CryptographyForm.KeyPreview = $True
+$LXBase64CryptographyForm.Add_KeyDown({if ($_.KeyCode -eq "Enter") {}})
+$LXBase64CryptographyForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXBase64CryptographyForm.Close();}})
+# KeyEvent End
+# Event End
+
+# LXBase64CryptographyForm Start
+$LXBase64CryptographyForm.Text = "LXBase64Cryptography"
+$LXBase64CryptographyForm.Icon = $LXBase64CryptographyIcon
+$LXBase64CryptographyForm.Font = $LXBase64CryptographyFont
+$LXBase64CryptographyForm.ClientSize = "500, 95"
+$LXBase64CryptographyForm.StartPosition = "CenterScreen"
+$LXBase64CryptographyForm.FormBorderStyle = "Sizable"
+$LXBase64CryptographyForm.MaximizeBox = $False
+$LXBase64CryptographyForm.MinimizeBox = $False
+$LXBase64CryptographyForm.BackColor = "DarkGray"
+# LXBase64CryptographyForm End
+
+# LXEncodeTextBox Start
+$LXEncodeTextBox.Location = New-Object System.Drawing.Size(5,5)
+$LXEncodeTextBox.Size = New-Object System.Drawing.Size(400,0)
+$LXEncodeTextBox.Anchor = "Top, Left, Right"
+$LXEncodeTextBox.Text = "Encode"
+# LXEncodeTextBox End
+
+# LXEncodeButton Start
+$LXEncodeButton.Location = New-Object System.Drawing.Size(425,5)
+$LXEncodeButton.Size = New-Object System.Drawing.Size(70,25)
+$LXEncodeButton.Anchor = "Top, Right"
+$LXEncodeButton.Text = "Encode"
+$LXEncodeButton.FlatAppearance.BorderSize = "0"
+$LXEncodeButton.BackColor = "LightGreen"
+$LXEncodeButton.FlatStyle = "Flat"
+$LXEncodeButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXEncodeButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXEncodeButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXEncodeButton.Add_Click($LXEncodeButton_Click)
+# LXEncodeButton End
+
+# LXDecodeTextBox Start
+$LXDecodeTextBox.Location = New-Object System.Drawing.Size(5,35)
+$LXDecodeTextBox.Size = New-Object System.Drawing.Size(400,0)
+$LXDecodeTextBox.Anchor = "Top, Left, Right"
+$LXDecodeTextBox.Text = "Decode"
+# LXDecodeTextBox End
+
+# LXDecodeButton Start
+$LXDecodeButton.Location = New-Object System.Drawing.Size(425,35)
+$LXDecodeButton.Size = New-Object System.Drawing.Size(70,25)
+$LXDecodeButton.Anchor = "Top, Right"
+$LXDecodeButton.Text = "Decode"
+$LXDecodeButton.FlatAppearance.BorderSize = "0"
+$LXDecodeButton.BackColor = "LightGreen"
+$LXDecodeButton.FlatStyle = "Flat"
+$LXDecodeButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXDecodeButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXDecodeButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXDecodeButton.Add_Click($LXDecodeButton_Click)
+# LXDecodeButton End
+
+# LXOutputTextBox Start
+$LXOutputTextBox.Location = New-Object System.Drawing.Size(5,65)
+$LXOutputTextBox.Size = New-Object System.Drawing.Size(400,0)
+$LXOutputTextBox.Anchor = "Top, Left, Right"
+$LXOutputTextBox.Text = "Output"
+# LXOutputTextBox End
+
+# LXOutputButton Start
+$LXOutputButton.Location = New-Object System.Drawing.Size(425,65)
+$LXOutputButton.Size = New-Object System.Drawing.Size(70,25)
+$LXOutputButton.Anchor = "Top, Right"
+$LXOutputButton.Text = "Copy"
+$LXOutputButton.FlatAppearance.BorderSize = "0"
+$LXOutputButton.BackColor = "LightGreen"
+$LXOutputButton.FlatStyle = "Flat"
+$LXOutputButton.FlatAppearance.MouseOverBackColor = "Transparent"
+$LXOutputButton.FlatAppearance.MouseDownBackColor = "Transparent"
+$LXOutputButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXOutputButton.Add_Click($LXOutputButton_Click)
+# LXOutputButton End
+
+# Control Start
+$LXBase64CryptographyForm.Controls.Add($LXEncodeTextBox)
+$LXBase64CryptographyForm.Controls.Add($LXEncodeButton)
+$LXBase64CryptographyForm.Controls.Add($LXDecodeTextBox)
+$LXBase64CryptographyForm.Controls.Add($LXDecodeButton)
+$LXBase64CryptographyForm.Controls.Add($LXOutputTextBox)
+$LXBase64CryptographyForm.Controls.Add($LXOutputButton)
+# Control End
+
+# ShowDialog Start
+$LXBase64CryptographyForm.ShowDialog()
+# ShowDialog End
+
+# LXBase64Cryptography End
