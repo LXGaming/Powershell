@@ -1,0 +1,124 @@
+# LXWC Start
+
+# Intro Start
+Clear-Host
+Write-Host "Windows 10 Wallpaper Changer" -ForegroundColor Green
+Write-Host "Creator/Developer - Alex Thomson" -ForegroundColor Red
+# Intro End
+
+# Add-Type Start
+Add-Type -AssemblyName System.Windows.Forms
+# Add-Type End
+
+# Reference Start
+$LXWCForm = New-Object System.Windows.Forms.Form
+$LXWCIcon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
+$LXWCFont = New-Object System.Drawing.Font("Times New Roman","10",[System.Drawing.FontStyle]::Regular)
+# Font styles are: Regular, Bold, Italic, Underline, Strikeout
+$WindowsWallpaperPath = "$env:APPDATA\Microsoft\Windows\Themes\"
+$LXOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+$IE = New-Object -com InternetExplorer.Application
+$LXLabel = New-Object System.Windows.Forms.Label
+$LXOpenFileDialogButton = New-Object System.Windows.Forms.Button
+$LXRunButton = New-Object System.Windows.Forms.Button
+$LXCancelButton = New-Object System.Windows.Forms.Button
+# Reference End
+
+# Event Start
+$LXOpenFileDialogButton_Click = {$LXOpenFileDialog.ShowDialog();$LXLabel.Text = $LXOpenFileDialog.FileName;$LXFile = $LXOpenFileDialog.SafeFileName}
+$LXRunButton_Click = {
+Copy-Item $LXOpenFileDialog.FileName $WindowsWallpaperPath;
+Rename-Item $WindowsWallpaperPath\TranscodedWallpaper "TranscodedWallpaperOld";
+Rename-Item $WindowsWallpaperPath\$LXFile "TranscodedWallpaper";
+$IE.Visible = $True;$IE.Navigate($LXOpenFileDialog.FileName);
+[System.Windows.Forms.MessageBox]::Show("Right Click Image and Select 'Set as background'" , "LX's Windows 10 Wallpaper Changer" , 0)
+}
+$LXCancelButton_Click = {$LXWCForm.Close()}
+# KeyEvent Start
+$LXWCForm.KeyPreview = $True
+$LXWCForm.Add_KeyDown({if ($_.KeyCode -eq "Enter") {}})
+$LXWCForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXWCForm.Close();}})
+# KeyEvent End
+# Event End
+
+# LXWCForm Start
+$LXWCForm.Text = "LXWC"
+$LXWCForm.Topmost = $True
+$LXWCForm.Icon = $LXWCIcon
+$LXWCForm.Font = $LXWCFont
+$LXWCForm.MaximizeBox = $False
+$LXWCForm.MinimizeBox = $False
+$LXWCForm.BackColor = "DarkGray"
+$LXWCForm.ClientSize = "500, 60"
+$LXWCForm.StartPosition = "CenterScreen"
+$LXWCForm.FormBorderStyle = "FixedDialog"
+# LXWCForm End
+
+# LXOpenFileDialog Start
+$LXOpenFileDialog.Multiselect = $false
+$LXOpenFileDialog.ValidateNames = $true
+$LXOpenFileDialog.Title = "Select a Image"
+$LXOpenFileDialog.RestoreDirectory = $true
+# LXOpenFileDialog End
+
+# LXOpenFileDialogTextBox Start
+$LXLabel.Location = New-Object System.Drawing.Size(5,10)
+$LXLabel.Size = New-Object System.Drawing.Size(420,15)
+$LXLabel.Anchor = "Top, Left, Right"
+$LXLabel.Text = "Select A Image File"
+# LXOpenFileDialogTextBox End
+
+# LXOpenFileDialogButton Start
+$LXOpenFileDialogButton.Location = New-Object System.Drawing.Size(425,5)
+$LXOpenFileDialogButton.Size = New-Object System.Drawing.Size(70,23)
+$LXOpenFileDialogButton.Anchor = "Top, Right"
+$LXOpenFileDialogButton.Text = "Select"
+$LXOpenFileDialogButton.FlatAppearance.BorderSize = "0"
+$LXOpenFileDialogButton.BackColor = "Cyan"
+$LXOpenFileDialogButton.FlatStyle = "Flat"
+$LXOpenFileDialogButton.FlatAppearance.MouseOverBackColor = "LimeGreen"
+$LXOpenFileDialogButton.FlatAppearance.MouseDownBackColor = "LimeGreen"
+$LXOpenFileDialogButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXOpenFileDialogButton.Add_Click($LXOpenFileDialogButton_Click)
+# LXOpenFileDialogButton End
+
+# LXRunButton Start
+$LXRunButton.Location = New-Object System.Drawing.Size(175,30)
+$LXRunButton.Size = New-Object System.Drawing.Size(70,23)
+$LXRunButton.Anchor = "Top, Left"
+$LXRunButton.Text = "Run"
+$LXRunButton.FlatAppearance.BorderSize = "0"
+$LXRunButton.BackColor = "Cyan"
+$LXRunButton.FlatStyle = "Flat"
+$LXRunButton.FlatAppearance.MouseOverBackColor = "LimeGreen"
+$LXRunButton.FlatAppearance.MouseDownBackColor = "LimeGreen"
+$LXRunButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXRunButton.Add_Click($LXRunButton_Click)
+# LXRunButton End
+
+# LXCancelButton Start
+$LXCancelButton.Location = New-Object System.Drawing.Size(250,30)
+$LXCancelButton.Size = New-Object System.Drawing.Size(70,23)
+$LXCancelButton.Anchor = "Top, Right"
+$LXCancelButton.Text = "Cancel"
+$LXCancelButton.FlatAppearance.BorderSize = "0"
+$LXCancelButton.BackColor = "Cyan"
+$LXCancelButton.FlatStyle = "Flat"
+$LXCancelButton.FlatAppearance.MouseOverBackColor = "LimeGreen"
+$LXCancelButton.FlatAppearance.MouseDownBackColor = "LimeGreen"
+$LXCancelButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXCancelButton.Add_Click($LXCancelButton_Click)
+# LXCancelButton End
+
+# Control Start
+$LXWCForm.Controls.Add($LXLabel)
+$LXWCForm.Controls.Add($LXOpenFileDialogButton)
+$LXWCForm.Controls.Add($LXRunButton)
+$LXWCForm.Controls.Add($LXCancelButton)
+# Control End
+
+# ShowDialog Start
+$LXWCForm.ShowDialog()
+# ShowDialog End
+
+# LXWC End
