@@ -1,0 +1,136 @@
+# LXiDev Start
+
+# Intro Start
+Clear-Host
+Write-Host "iDevice Dev Tools" -ForegroundColor Green
+Write-Host "Creator/Developer - Alex Thomson" -ForegroundColor Cyan
+Write-Host "Please do NOT have more than One iDevice Connected" -ForegroundColor Red
+# Intro End
+
+# AssetLocation Start
+$LXAssetLoop = 0
+while($LXAssetLoop -ne 1) {
+$LXAssetLoop++
+$LXAssetBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+$LXAssetBrowser.ShowDialog()
+CD $LXAssetBrowser.SelectedPath
+}
+# AssetLocation End
+
+# Add-Type Start
+Add-Type -AssemblyName System.Windows.Forms
+# Add-Type End
+
+# Reference Start
+$LXiDevForm = New-Object System.Windows.Forms.Form
+$LXiDevFont = New-Object System.Drawing.Font("Segoe UI","10",[System.Drawing.FontStyle]::Regular)
+$LXiDevLinkFont = New-Object System.Drawing.Font("Segoe UI","10",[System.Drawing.FontStyle]::Underline)
+# Font styles are: Regular, Bold, Italic, Underline, Strikeout
+$LXiDevWelcomeLabel = New-Object System.Windows.Forms.Label
+$LXiDevGitLabel = New-Object System.Windows.Forms.Label
+$LXiDevWLBLabel = New-Object System.Windows.Forms.Label
+$LXiDeviceInfoLabel = New-Object System.Windows.Forms.Label
+$LXiDevCLBLabel = New-Object System.Windows.Forms.Label
+$LXiDevRefreshButton = New-Object System.Windows.Forms.Button
+$LXiDevQuitButton = New-Object System.Windows.Forms.Button
+# Reference End
+
+# Function Start
+function DeviceInfo {
+$idevicename = ./idevicename.exe
+$idevice_id = ./idevice_id.exe -l
+$LXiDeviceInfoLabel.Text = $idevicename + "`n" + $idevice_id
+}
+# Function End
+
+# Event Start
+$LXiDevRefreshButton_Click = {DeviceInfo}
+$LXiDevQuitButton_Click = {$LXiDevForm.Close();}
+# KeyEvent Start
+$LXiDevForm.KeyPreview = $True
+$LXiDevForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXiDevForm.Close();}})
+# KeyEvent End
+# Event End
+
+# LXiDevForm Start
+$LXiDevForm.Text = "LX's iDevice Utility v0.0.1"
+$LXiDevForm.Font = $LXiDevFont
+$LXiDevForm.ShowIcon = $False
+$LXiDevForm.MaximizeBox = $False
+$LXiDevForm.MinimizeBox = $False
+$LXiDevForm.ClientSize = "500, 500"
+$LXiDevForm.StartPosition = "CenterScreen"
+$LXiDevForm.FormBorderStyle = "Sizable"
+# LXiDevForm End
+
+# LXiDevWelcomeLabel Start
+$LXiDevWelcomeLabel.Location = New-Object System.Drawing.Size(5,5)
+$LXiDevWelcomeLabel.Size = New-Object System.Drawing.Size(495,20)
+$LXiDevWelcomeLabel.Anchor = "Top, Left"
+$LXiDevWelcomeLabel.Text = "Welcome to LX's iDevice Utility - Version 0.0.1"
+# LXiDevWelcomeLabel End
+
+# LXiDevGitLabel Start
+$LXiDevGitLabel.Location = New-Object System.Drawing.Size(5,25)
+$LXiDevGitLabel.Size = New-Object System.Drawing.Size(250,20)
+$LXiDevGitLabel.Anchor = "Top, Left"
+$LXiDevGitLabel.Text = "Source Code - Github"
+$LXiDevGitLabel.ForeColor = "Blue"
+$LXiDevGitLabel.Font = $LXiDevLinkFont
+$LXiDevGitLabel.Add_Click({[system.Diagnostics.Process]::Start("http://lxgaming.github.io/index.html")})
+# LXiDevGitLabel End
+
+# LXiDevWLBLabel Start
+$LXiDevWLBLabel.Location = New-Object System.Drawing.Size(5,50)
+$LXiDevWLBLabel.Size = New-Object System.Drawing.Size(490,1)
+$LXiDevWLBLabel.Anchor = "Bottom, Right, Left"
+$LXiDevWLBLabel.BorderStyle = "FixedSingle"
+# LXiDevWLBLabel End
+
+# LXiDeviceInfoLabel Start
+$LXiDeviceInfoLabel.Location = New-Object System.Drawing.Size(5,55)
+$LXiDeviceInfoLabel.Size = New-Object System.Drawing.Size(495,35)
+$LXiDeviceInfoLabel.Anchor = "Top, Left"
+$LXiDeviceInfoLabel.TextAlign = "MiddleCenter"
+$LXiDeviceInfoLabel.Text = "Press Refresh Button"
+# LXiDeviceInfoLabel End
+
+# LXiDevCLBLabel Start
+$LXiDevCLBLabel.Location = New-Object System.Drawing.Size(5,465)
+$LXiDevCLBLabel.Size = New-Object System.Drawing.Size(490,1)
+$LXiDevCLBLabel.Anchor = "Bottom, Right, Left"
+$LXiDevCLBLabel.BorderStyle = "FixedSingle"
+# LXiDevCLBLabel End
+
+# LXiDevRefreshButton Start
+$LXiDevRefreshButton.Location = New-Object System.Drawing.Size(340,470)
+$LXiDevRefreshButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevRefreshButton.Anchor = "Bottom, Right"
+$LXiDevRefreshButton.Text = "Refresh"
+$LXiDevRefreshButton.Add_Click($LXiDevRefreshButton_Click)
+# LXiDevRefreshButton End
+
+# LXiDevQuitButton Start
+$LXiDevQuitButton.Location = New-Object System.Drawing.Size(420,470)
+$LXiDevQuitButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevQuitButton.Anchor = "Bottom, Right"
+$LXiDevQuitButton.Text = "Quit"
+$LXiDevQuitButton.Add_Click($LXiDevQuitButton_Click)
+$LXiDevQuitButton.FlatStyle = "System"
+# LXiDevQuitButton End
+
+# Control Start
+$LXiDevForm.Controls.Add($LXiDevWelcomeLabel)
+$LXiDevForm.Controls.Add($LXiDevGitLabel)
+$LXiDevForm.Controls.Add($LXiDevWLBLabel)
+$LXiDevForm.Controls.Add($LXiDeviceInfoLabel)
+$LXiDevForm.Controls.Add($LXiDevCLBLabel)
+$LXiDevForm.Controls.Add($LXiDevRefreshButton)
+$LXiDevForm.Controls.Add($LXiDevQuitButton)
+# Control End
+
+# ShowDialog Start
+$LXiDevForm.ShowDialog()
+# ShowDialog End
+
+# LXiDev End
