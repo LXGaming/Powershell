@@ -25,6 +25,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $LXiDevForm = New-Object System.Windows.Forms.Form
 $LXiDevFont = New-Object System.Drawing.Font("Segoe UI","9",[System.Drawing.FontStyle]::Regular)
 $LXiDevLinkFont = New-Object System.Drawing.Font("Segoe UI","9",[System.Drawing.FontStyle]::Underline)
+$LXiDevVer = "0.1.1"
 $LXiDevWelcomeLabel = New-Object System.Windows.Forms.Label
 $LXiDevGitLabel = New-Object System.Windows.Forms.Label
 $LXiDevWLBLabel = New-Object System.Windows.Forms.Label
@@ -39,16 +40,16 @@ $LXiDevQuitButton = New-Object System.Windows.Forms.Button
 
 # Function Start
 function BasicDeviceInfo {
-$idevicename = ./idevicename.exe
-$idevice_id = ./idevice_id.exe -l
+Try {
+$idevicename = ./idevicename.exe;$idevice_id = ./idevice_id.exe -l
 $LXiDeviceInfoLabel.Text = $idevicename + "`n" + $idevice_id
+} catch {$LXiDeviceInfoLabel.Text = $_}
 }
 function FullDeviceInfo {
 $Info = $LXiDevinfoComboBox.SelectedItem -replace "[^0-9,' ']",""
-Write-Host $Info
-$DeviceInfo = ./ideviceinfo.exe
-$DeviceInfo | Select -Index $Info -OutVariable DeviceInfo
-$LXiDeviceInfoLabel.Text = $DeviceInfo
+$DeviceInfo = ./ideviceinfo.exe;$DeviceInfo | Select -Index $Info -OutVariable DeviceInfoOut
+if ($DeviceInfo -match "No device found, is it plugged in?") {$LXiDeviceInfoLabel.Text = $DeviceInfo
+} else {$LXiDeviceInfoLabel.Text = $DeviceInfoOut}
 }
 function PairDevice {
 $idevicepair = ./idevicepair.exe pair
@@ -68,7 +69,7 @@ $LXiDevForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXiDevForm.Close();}})
 # Event End
 
 # LXiDevForm Start
-$LXiDevForm.Text = "LX's iDevice Utility v0.1.0"
+$LXiDevForm.Text = "LX's iDevice Utility v" + $LXiDevVer
 $LXiDevForm.Font = $LXiDevFont
 $LXiDevForm.ShowIcon = $False
 $LXiDevForm.MaximizeBox = $False
@@ -82,7 +83,7 @@ $LXiDevForm.FormBorderStyle = "Sizable"
 $LXiDevWelcomeLabel.Location = New-Object System.Drawing.Size(5,5)
 $LXiDevWelcomeLabel.Size = New-Object System.Drawing.Size(495,20)
 $LXiDevWelcomeLabel.Anchor = "Top, Left"
-$LXiDevWelcomeLabel.Text = "Welcome to LX's iDevice Utility - Version 0.1.0"
+$LXiDevWelcomeLabel.Text = "Welcome to LX's iDevice Utility - Version " + $LXiDevVer
 # LXiDevWelcomeLabel End
 
 # LXiDevGitLabel Start
