@@ -1,0 +1,306 @@
+# LXiDev Start
+
+# Host Start
+Clear-Host
+Write-Host "LX's iDevice Dev Tools" -ForegroundColor Green
+Write-Host "Creator/Developer - Alex Thomson" -ForegroundColor Cyan
+Write-Host "Please use with only 1 iDevice connected" -ForegroundColor Red
+# Host End
+
+# Add-Type Start
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -Assembly System.Io.Compression.Filesystem
+# Add-Type End
+
+# Reference Start
+$LXiDevAssetForm = New-Object System.Windows.Forms.Form
+$LXAssetBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+$LXiDevAssetLabel = New-Object System.Windows.Forms.Label
+$LXiDevAssetLocateButton = New-Object System.Windows.Forms.Button
+$LXiDevAssetDownloadButton = New-Object System.Windows.Forms.Button
+$LXiDevAssetQuitButton = New-Object System.Windows.Forms.Button
+$LXiDevForm = New-Object System.Windows.Forms.Form
+$LXiDevFont = New-Object System.Drawing.Font("Segoe UI","9",[System.Drawing.FontStyle]::Regular)
+$LXiDevLinkFont = New-Object System.Drawing.Font("Segoe UI","9",[System.Drawing.FontStyle]::Underline)
+$LXiDevVer = "0.1.1"
+$LXiDevWelcomeLabel = New-Object System.Windows.Forms.Label
+$LXiDevGitLabel = New-Object System.Windows.Forms.Label
+$LXiDevWLBLabel = New-Object System.Windows.Forms.Label
+$LXiDevinfoComboBox = New-Object System.Windows.Forms.ComboBox
+$LXiDevDetectButton = New-Object System.Windows.Forms.Button
+$LXiDevRetrieveButton = New-Object System.Windows.Forms.Button
+$LXiDeviceInfoLabel = New-Object System.Windows.Forms.Label
+$LXiDevCLBLabel = New-Object System.Windows.Forms.Label
+$LXiDevPairButton = New-Object System.Windows.Forms.Button
+$LXiDevQuitButton = New-Object System.Windows.Forms.Button
+# Reference End
+
+# Function Start
+function Locate {
+$LXAssetBrowser.Description = "Locate Asset Folder"
+$LXAssetBrowser.ShowDialog()
+CD $LXAssetBrowser.SelectedPath
+$LXiDevAssetForm.Hide();$LXiDevForm.ShowDialog()
+}
+
+function Download {
+$LXAssetBrowser.Description = "Choose Download Location"
+$LXAssetBrowser.ShowDialog()
+$Location = $LXAssetBrowser.SelectedPath + "\LXiDeviceUtility"
+$Source = "http://cdn.quamotion.mobi/imobiledevice/imobiledevice-1.2.0-r3.zip"
+$DownloadPath = $Location + '\imobiledevice-1.2.0-r3.zip'
+New-Item $Location -type directory | Out-Null;Write-Host "Created Folder" $Location
+Write-Host "Downloading Files...";Invoke-WebRequest $Source -OutFile $DownloadPath
+Write-Host "Extracting Files...";[Io.Compression.ZipFile]::ExtractToDirectory($DownloadPath, $Location)
+Write-Host "Files Extracted"
+$LXiDevAssetForm.Hide();$LXiDevForm.ShowDialog()
+}
+
+function BasicDeviceInfo {
+Try {
+$idevicename = ./idevicename.exe;$idevice_id = ./idevice_id.exe -l
+$LXiDeviceInfoLabel.Text = $idevicename + "`n" + $idevice_id
+} catch {$LXiDeviceInfoLabel.Text = $_}
+}
+
+function FullDeviceInfo {
+$Info = $LXiDevinfoComboBox.SelectedItem -replace "[^0-9,' ']",""
+$DeviceInfo = ./ideviceinfo.exe;$DeviceInfo | Select -Index $Info -OutVariable DeviceInfoOut
+if ($DeviceInfo -match "No device found, is it plugged in?") {$LXiDeviceInfoLabel.Text = $DeviceInfo
+} else {$LXiDeviceInfoLabel.Text = $DeviceInfoOut}
+}
+
+function PairDevice {
+$idevicepair = ./idevicepair.exe pair
+$LXiDeviceInfoLabel.Text = $idevicepair
+}
+# Function End
+
+# Event Start
+$LXiDevAssetLocateButton_Click = {Locate}
+$LXiDevAssetDownloadButton_Click = {Download}
+$LXiDevAssetQuitButton_Click = {$LXiDevAssetForm.Close();}
+$LXiDevDetectButton_Click = {BasicDeviceInfo}
+$LXiDevRetrieveButton_Click = {FullDeviceInfo}
+$LXiDevPairButton_Click = {PairDevice}
+$LXiDevQuitButton_Click = {$LXiDevForm.Close();}
+# KeyEvent Start
+$LXiDevAssetForm.KeyPreview = $True
+$LXiDevAssetForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXiDevAssetForm.Close();}})
+$LXiDevForm.KeyPreview = $True
+$LXiDevForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXiDevForm.Close();}})
+# KeyEvent End
+# Event End
+
+# LXiDevAssetForm Start
+$LXiDevAssetForm.Text = "LX's iDevice Utility"
+$LXiDevAssetForm.Font = $LXiDevFont
+$LXiDevAssetForm.ShowIcon = $False
+$LXiDevAssetForm.MaximizeBox = $False
+$LXiDevAssetForm.MinimizeBox = $False
+$LXiDevAssetForm.ClientSize = "245, 60"
+$LXiDevAssetForm.StartPosition = "CenterScreen"
+$LXiDevAssetForm.FormBorderStyle = "FixedDialog"
+# LXiDevAssetForm End
+
+# LXiDevAssetLabel Start
+$LXiDevAssetLabel.Location = New-Object System.Drawing.Size(5,5)
+$LXiDevAssetLabel.Size = New-Object System.Drawing.Size(235,20)
+$LXiDevAssetLabel.Anchor = "Top, Left"
+$LXiDevAssetLabel.Text = "Welcome to LX's iDevice Utility"
+$LXiDevAssetLabel.TextAlign = "MiddleCenter"
+# LXiDevAssetLabel End
+
+# LXiDevAssetLocateButton Start
+$LXiDevAssetLocateButton.Location = New-Object System.Drawing.Size(5,30)
+$LXiDevAssetLocateButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevAssetLocateButton.Anchor = "Top, Left"
+$LXiDevAssetLocateButton.Text = "Locate"
+$LXiDevAssetLocateButton.Add_Click($LXiDevAssetLocateButton_Click)
+# LXiDevAssetLocateButton End
+
+# LXiDevAssetDownloadButton Start
+$LXiDevAssetDownloadButton.Location = New-Object System.Drawing.Size(85,30)
+$LXiDevAssetDownloadButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevAssetDownloadButton.Anchor = "Top, Left"
+$LXiDevAssetDownloadButton.Text = "Download"
+$LXiDevAssetDownloadButton.Add_Click($LXiDevAssetDownloadButton_Click)
+# LXiDevAssetDownloadButton End
+
+# LXiDevAssetQuitButton Start
+$LXiDevAssetQuitButton.Location = New-Object System.Drawing.Size(165,30)
+$LXiDevAssetQuitButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevAssetQuitButton.Anchor = "Top, Left"
+$LXiDevAssetQuitButton.Text = "Quit"
+$LXiDevAssetQuitButton.Add_Click($LXiDevAssetQuitButton_Click)
+$LXiDevAssetQuitButton.FlatStyle = "System"
+# LXiDevAssetQuitButton End
+
+# Control Start
+$LXiDevAssetForm.Controls.Add($LXiDevAssetLabel)
+$LXiDevAssetForm.Controls.Add($LXiDevAssetLocateButton)
+$LXiDevAssetForm.Controls.Add($LXiDevAssetDownloadButton)
+$LXiDevAssetForm.Controls.Add($LXiDevAssetQuitButton)
+# Control End
+
+# LXiDevForm Start
+$LXiDevForm.Text = "LX's iDevice Utility v" + $LXiDevVer
+$LXiDevForm.Font = $LXiDevFont
+$LXiDevForm.ShowIcon = $False
+$LXiDevForm.MaximizeBox = $False
+$LXiDevForm.MinimizeBox = $False
+$LXiDevForm.ClientSize = "500, 500"
+$LXiDevForm.StartPosition = "CenterScreen"
+$LXiDevForm.FormBorderStyle = "FixedDialog"
+# LXiDevForm End
+
+# LXiDevWelcomeLabel Start
+$LXiDevWelcomeLabel.Location = New-Object System.Drawing.Size(5,5)
+$LXiDevWelcomeLabel.Size = New-Object System.Drawing.Size(495,20)
+$LXiDevWelcomeLabel.Anchor = "Top, Left"
+$LXiDevWelcomeLabel.Text = "Welcome to LX's iDevice Utility - Version " + $LXiDevVer
+# LXiDevWelcomeLabel End
+
+# LXiDevGitLabel Start
+$LXiDevGitLabel.Location = New-Object System.Drawing.Size(5,25)
+$LXiDevGitLabel.Size = New-Object System.Drawing.Size(250,20)
+$LXiDevGitLabel.Anchor = "Top, Left"
+$LXiDevGitLabel.Text = "Source Code - Github"
+$LXiDevGitLabel.ForeColor = "Blue"
+$LXiDevGitLabel.Font = $LXiDevLinkFont
+$LXiDevGitLabel.Add_Click({[system.Diagnostics.Process]::Start("http://lxgaming.github.io/index.html")})
+# LXiDevGitLabel End
+
+# LXiDevWLBLabel Start
+$LXiDevWLBLabel.Location = New-Object System.Drawing.Size(5,50)
+$LXiDevWLBLabel.Size = New-Object System.Drawing.Size(490,1)
+$LXiDevWLBLabel.Anchor = "Top, Left, Right"
+$LXiDevWLBLabel.BorderStyle = "FixedSingle"
+# LXiDevWLBLabel End
+
+# LXiDevinfoComboBox Start
+$LXiDevinfoComboBox.Location = New-Object System.Drawing.Size(85,60)
+$LXiDevinfoComboBox.Size = New-Object System.Drawing.Size(330,25)
+$LXiDevinfoComboBox.Anchor = "Top, Left, Right"
+$LXiDevinfoComboBox.DropDownStyle = "DropDownList"
+$LXiDevinfoComboBox.DropDownHeight = 375
+$LXiDevinfoComboBox.Items.Add("0 - ActivationState") | Out-Null
+$LXiDevinfoComboBox.Items.Add("1 - ActivationStateAcknowledged") | Out-Null
+$LXiDevinfoComboBox.Items.Add("2 - BasebandStatus") | Out-Null
+$LXiDevinfoComboBox.Items.Add("3 - BluetoothAddress") | Out-Null
+$LXiDevinfoComboBox.Items.Add("4 - BoardId") | Out-Null
+$LXiDevinfoComboBox.Items.Add("5 - BrickState") | Out-Null
+$LXiDevinfoComboBox.Items.Add("6 - BuildVersion") | Out-Null
+$LXiDevinfoComboBox.Items.Add("7 - CPUArchitecture") | Out-Null
+$LXiDevinfoComboBox.Items.Add("8 - ChipID") | Out-Null
+$LXiDevinfoComboBox.Items.Add("9 - DeviceClass") | Out-Null
+$LXiDevinfoComboBox.Items.Add("10 - DeviceColor") | Out-Null
+$LXiDevinfoComboBox.Items.Add("11 - DeviceName") | Out-Null
+$LXiDevinfoComboBox.Items.Add("12 - DieID") | Out-Null
+$LXiDevinfoComboBox.Items.Add("13 - EthernetAddress") | Out-Null
+$LXiDevinfoComboBox.Items.Add("14 - FirmwareVersion") | Out-Null
+$LXiDevinfoComboBox.Items.Add("15 - HardwareModel") | Out-Null
+$LXiDevinfoComboBox.Items.Add("16 - HardwarePlatform") | Out-Null
+$LXiDevinfoComboBox.Items.Add("17 - HostAttached") | Out-Null
+$LXiDevinfoComboBox.Items.Add("18 - MLBSerialNumber") | Out-Null
+$LXiDevinfoComboBox.Items.Add("19 - ModelNumber") | Out-Null
+$LXiDevinfoComboBox.Items.Add("20 - NonVolatileRam") | Out-Null
+$LXiDevinfoComboBox.Items.Add("21 -- auto-boot") | Out-Null
+$LXiDevinfoComboBox.Items.Add("22 -- backlight-level") | Out-Null
+$LXiDevinfoComboBox.Items.Add("23 -- boot-args") | Out-Null
+$LXiDevinfoComboBox.Items.Add("24 -- com.apple.System.boot-nonce") | Out-Null
+$LXiDevinfoComboBox.Items.Add("25 - PartitionType") | Out-Null
+$LXiDevinfoComboBox.Items.Add("26 - PasswordProtected") | Out-Null
+$LXiDevinfoComboBox.Items.Add("27 - ProductName") | Out-Null
+$LXiDevinfoComboBox.Items.Add("28 - ProductType") | Out-Null
+$LXiDevinfoComboBox.Items.Add("29 - ProductVersion") | Out-Null
+$LXiDevinfoComboBox.Items.Add("30 - ProductionSOC") | Out-Null
+$LXiDevinfoComboBox.Items.Add("31 - ProtocolVersion") | Out-Null
+$LXiDevinfoComboBox.Items.Add("32 - RegionInfo") | Out-Null
+$LXiDevinfoComboBox.Items.Add("33 - SBLockdownEverRegisteredKey") | Out-Null
+$LXiDevinfoComboBox.Items.Add("34 - SIMStatus") | Out-Null
+$LXiDevinfoComboBox.Items.Add("35 - SerialNumber") | Out-Null
+$LXiDevinfoComboBox.Items.Add("36 - SoftwareBehavior") | Out-Null
+$LXiDevinfoComboBox.Items.Add("37 - SoftwareBundleVersion") | Out-Null
+$LXiDevinfoComboBox.Items.Add("38 - SupportedDeviceFamilies[1]") | Out-Null
+$LXiDevinfoComboBox.Items.Add("39 -- Zero") | Out-Null
+$LXiDevinfoComboBox.Items.Add("40 - TelephonyCapability") | Out-Null
+$LXiDevinfoComboBox.Items.Add("41 - TimeIntervalSinceNineteenSeventy") | Out-Null
+$LXiDevinfoComboBox.Items.Add("42 - TimeZone") | Out-Null
+$LXiDevinfoComboBox.Items.Add("43 - TimeZoneOffsetFromUTC") | Out-Null
+$LXiDevinfoComboBox.Items.Add("44 - TrustedHostAttached") | Out-Null
+$LXiDevinfoComboBox.Items.Add("45 - UniqueChipID") | Out-Null
+$LXiDevinfoComboBox.Items.Add("46 - UniqueDeviceID") | Out-Null
+$LXiDevinfoComboBox.Items.Add("47 - UseRaptorCerts") | Out-Null
+$LXiDevinfoComboBox.Items.Add("48 - UsesTwentyFourHourClock") | Out-Null
+$LXiDevinfoComboBox.Items.Add("49 - WiFiAddress") | Out-Null
+$LXiDevinfoComboBox.Items.Add("50 - WirelessBoardSerialNumber") | Out-Null
+# LXiDevinfoComboBox End
+
+# LXiDevDetectButton Start
+$LXiDevDetectButton.Location = New-Object System.Drawing.Size(5,59)
+$LXiDevDetectButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevDetectButton.Anchor = "Top, Left"
+$LXiDevDetectButton.Text = "Detect"
+$LXiDevDetectButton.Add_Click($LXiDevDetectButton_Click)
+# LXiDevDetectButton End
+
+# LXiDevRetrieveButton Start
+$LXiDevRetrieveButton.Location = New-Object System.Drawing.Size(420,59)
+$LXiDevRetrieveButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevRetrieveButton.Anchor = "Top, Right"
+$LXiDevRetrieveButton.Text = "Retrieve"
+$LXiDevRetrieveButton.Add_Click($LXiDevRetrieveButton_Click)
+# LXiDevRetrieveButton End
+
+# LXiDeviceInfoLabel Start
+$LXiDeviceInfoLabel.Location = New-Object System.Drawing.Size(5,90)
+$LXiDeviceInfoLabel.Size = New-Object System.Drawing.Size(490,370)
+$LXiDeviceInfoLabel.Anchor = "Top, Bottom, Left, Right"
+$LXiDeviceInfoLabel.TextAlign = "MiddleCenter"
+$LXiDeviceInfoLabel.Text = "Press Detect Button"
+# LXiDeviceInfoLabel End
+
+# LXiDevCLBLabel Start
+$LXiDevCLBLabel.Location = New-Object System.Drawing.Size(5,467)
+$LXiDevCLBLabel.Size = New-Object System.Drawing.Size(490,1)
+$LXiDevCLBLabel.Anchor = "Bottom, Right, Left"
+$LXiDevCLBLabel.BorderStyle = "FixedSingle"
+# LXiDevCLBLabel End
+
+# LXiDevPairButton Start
+$LXiDevPairButton.Location = New-Object System.Drawing.Size(5,472)
+$LXiDevPairButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevPairButton.Anchor = "Bottom, Left"
+$LXiDevPairButton.Text = "Pair"
+$LXiDevPairButton.Add_Click($LXiDevPairButton_Click)
+$LXiDevPairButton.FlatStyle = "System"
+# LXiDevQuitButton End
+
+# LXiDevQuitButton Start
+$LXiDevQuitButton.Location = New-Object System.Drawing.Size(420,472)
+$LXiDevQuitButton.Size = New-Object System.Drawing.Size(75,25)
+$LXiDevQuitButton.Anchor = "Bottom, Right"
+$LXiDevQuitButton.Text = "Quit"
+$LXiDevQuitButton.Add_Click($LXiDevQuitButton_Click)
+$LXiDevQuitButton.FlatStyle = "System"
+# LXiDevQuitButton End
+
+# Control Start
+$LXiDevForm.Controls.Add($LXiDevWelcomeLabel)
+$LXiDevForm.Controls.Add($LXiDevGitLabel)
+$LXiDevForm.Controls.Add($LXiDevWLBLabel)
+$LXiDevForm.Controls.Add($LXiDevinfoComboBox)
+$LXiDevForm.Controls.Add($LXiDevDetectButton)
+$LXiDevForm.Controls.Add($LXiDevRetrieveButton)
+$LXiDevForm.Controls.Add($LXiDeviceInfoLabel)
+$LXiDevForm.Controls.Add($LXiDevCLBLabel)
+$LXiDevForm.Controls.Add($LXiDevPairButton)
+$LXiDevForm.Controls.Add($LXiDevQuitButton)
+# Control End
+
+# ShowDialog Start
+$LXiDevAssetForm.ShowDialog()
+# ShowDialog End
+
+# LXiDev End
