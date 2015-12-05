@@ -1,0 +1,93 @@
+# LXPing Start
+
+# USER CONFIG Start
+# Server to ping
+$Server = ""
+# Loop Speed in ms
+$TickInterval = "2500"
+# USER CONFIG End
+
+# Host Start
+Clear-Host
+# Host End
+
+# Add-Type Start
+Add-Type -AssemblyName System.Windows.Forms
+# Add-Type End
+
+# Reference Start
+$LXPingTimer = New-Object 'System.Windows.Forms.Timer'
+$InitialFormWindowState = New-Object 'System.Windows.Forms.FormWindowState'
+$LXPingForm = New-Object System.Windows.Forms.Form
+$LXPingFont = New-Object System.Drawing.Font("Segoe UI","15",[System.Drawing.FontStyle]::Regular)
+$LXPingLabel = New-Object System.Windows.Forms.Label
+# Reference End
+
+# Event Start
+# KeyEvent Start
+$LXPingForm.KeyPreview = $True
+$LXPingForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXPingForm.Close();}})
+# KeyEvent End
+# TimerTick Start
+$LXPingTimer_Tick={
+$TC = (Test-Connection -ComputerName $Server -Count 1  | measure-Object -Property ResponseTime -Average).average 
+$ServerPing = ($TC -as [int] )
+if($ServerPing -le 50) { $LXPingLabel.ForeColor = "Green";$LXPingLabel.Text = "Ping - " + $ServerPing }
+elseif($ServerPing -le 150) { $LXPingLabel.ForeColor = "Gold";$LXPingLabel.Text = "Ping - " + $ServerPing }
+elseif($ServerPing -gt 150) { $LXPingLabel.ForeColor = "Red";$LXPingLabel.Text = "Ping - " + $ServerPing }
+}
+# TimerTick End
+# StateCorrection Start
+$Form_StateCorrection_Load={ $LXPingForm.WindowState = $InitialFormWindowState }
+# StateCorrection End
+# Event End
+
+# Cleanup Start
+$Form_Cleanup_FormClosed={
+try{
+$LXPingTimer.Remove_Tick($LXPingTimer_Tick)
+$LXPingForm.Remove_Load($Form_StateCorrection_Load)
+$LXPingForm.Remove_FormClosed($Form_Cleanup_FormClosed)
+}catch [Exception]{ }
+}
+# Cleanup End
+
+# LXPingForm Start
+$LXPingForm.Text = "LXPing"
+$LXPingForm.Font = $LXPingFont
+$LXPingForm.ShowIcon = $False
+$LXPingForm.MaximizeBox = $False
+$LXPingForm.MinimizeBox = $False
+$LXPingForm.TopMost = $True
+$LXPingForm.ClientSize = "40, 40"
+$LXPingForm.BackColor = "DarkGray"
+$LXPingForm.StartPosition = "CenterScreen"
+$LXPingForm.FormBorderStyle = "FixedDialog"
+# LXPingForm End
+
+# LXPingLabel Start
+$LXPingLabel.Location = New-Object System.Drawing.Size(5,5)
+$LXPingLabel.Size = New-Object System.Drawing.Size(30,30)
+$LXPingLabel.Anchor = "Top, Bottom, Left, Right"
+$LXPingLabel.TextAlign = "MiddleLeft"
+$LXPingLabel.Text = "Waiting..."
+# LXPingLabel End
+
+# Timer Start
+$LXPingTimer.Enabled = $True
+$LXPingTimer.Interval = $TickInterval
+$LXPingTimer.add_Tick($LXPingTimer_Tick)
+# Timer End
+
+# Control Start
+$LXPingForm.Controls.Add($LXPingLabel)
+# Control End
+
+# ShowDialog Start
+$InitialFormWindowState = $LXPingForm.WindowState
+$LXPingForm.Add_Load($Form_StateCorrection_Load)
+$LXPingForm.Add_FormClosed($Form_Cleanup_FormClosed)
+return $LXPingForm.ShowDialog()
+# ShowDialog End
+
+# LXPing End
