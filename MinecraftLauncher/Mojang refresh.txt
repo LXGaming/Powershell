@@ -1,0 +1,14 @@
+$json = @"
+{
+    "accessToken": "",
+    "clientToken": "",
+
+    "selectedProfile": {
+        "id": "",
+        "name": ""
+    }
+}
+"@
+$PowerShellRepresentation = $json | ConvertTo-Json
+Invoke-RestMethod -Uri https://authserver.mojang.com/refresh -ContentType application/json -Method POST -Body $json
+$PowerShellRepresentation

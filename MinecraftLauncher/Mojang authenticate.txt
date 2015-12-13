@@ -1,0 +1,15 @@
+$json = @"
+{
+    "agent": {
+        "name": "Minecraft",
+        "version": 1
+
+    },
+    "username": "EMail",
+
+    "password": "Pass"
+}
+"@
+$PowerShellRepresentation = $json | ConvertTo-Json
+Invoke-RestMethod -Uri https://authserver.mojang.com/authenticate -ContentType application/json -Method POST -Body $json
+$PowerShellRepresentation
