@@ -1,0 +1,101 @@
+PowerShell.exe -windowstyle hidden {
+# Script Start
+
+# Assembly Start
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+# Assembly End
+
+# Reference Start
+$LXSysInfoTimer = New-Object 'System.Windows.Forms.Timer'
+$InitialFormWindowState = New-Object 'System.Windows.Forms.FormWindowState'
+$LXSysInfoForm = New-Object 'System.Windows.Forms.Form'
+$LXSysInfoFont = New-Object System.Drawing.Font("Segoe UI","14",[System.Drawing.FontStyle]::Regular)
+$LXSysInfoLabel = New-Object System.Windows.Forms.Label
+$LXSysInfoCapsLockLabel = New-Object System.Windows.Forms.Label
+# Reference End
+
+# EventLoad Start
+$FormEvent_Load={
+$Date = Get-Date -Format D
+$Time = Get-Date -Format T
+$LXSysInfoLabel.Text = $Date + "`n" + $Time
+}
+# EventLoad End
+
+# TimerTick Start
+$LXSysInfoTimer_Tick={
+$Date = Get-Date -Format D
+$Time = Get-Date -Format T
+$LXSysInfoLabel.Text = $Date + "`n" + $Time
+}
+# TimerTick End
+
+# StateCorrection Start
+$Form_StateCorrection_Load=
+{
+#Correct the initial state of the form to prevent the .Net maximized form issue
+$LXSysInfoForm.WindowState = $InitialFormWindowState
+}
+# StateCorrection End
+
+# Cleanup Start
+$Form_Cleanup_FormClosed={
+Try {
+$LXSysInfoForm.remove_Load($FormEvent_Load)
+$LXSysInfoTimer.remove_Tick($LXSysInfoTimer_Tick)
+$LXSysInfoForm.remove_Load($Form_StateCorrection_Load)
+$LXSysInfoForm.remove_FormClosed($Form_Cleanup_FormClosed)
+} catch [Exception] { }
+}
+# Cleanup End
+
+# LXWebForm Start
+$LXSysInfoForm.Text = "LX's System Info"
+$LXSysInfoForm.Font = $LXSysInfoFont
+$LXSysInfoForm.ClientSize = '250, 60'
+$LXSysInfoForm.StartPosition = "CenterScreen"
+$LXSysInfoForm.FormBorderStyle = "FixedDialog"
+$LXSysInfoForm.BackColor = "Black"
+$LXSysInfoForm.Opacity = 0.7
+$LXSysInfoForm.MaximizeBox = $False
+$LXSysInfoForm.MinimizeBox = $False
+$LXSysInfoForm.TopMost = $True
+$LXSysInfoForm.add_Load($FormEvent_Load)
+# LXWebForm End
+
+# KeyEvent Start
+$LXSysInfoForm.KeyPreview = $True
+$LXSysInfoForm.Add_KeyDown({if($_.KeyCode -eq "Escape"){$LXSysInfoForm.Close()}})
+# KeyEvent End
+
+# LXKSLabel Start
+$LXSysInfoLabel.Location = New-Object System.Drawing.Size(5,5)
+$LXSysInfoLabel.Size = New-Object System.Drawing.Size(240,45)
+$LXSysInfoLabel.ForeColor = "White"
+$LXSysInfoLabel.Text = "Waiting"
+$LXSysInfoLabel.TextAlign = "TopCenter"
+# LXKSLabel End
+
+# Control Start
+$LXSysInfoForm.Controls.Add($LXSysInfoLabel)
+# Control End
+
+# Timer Start
+$LXSysInfoTimer.Enabled = $True
+$LXSysInfoTimer.Interval = 1000
+$LXSysInfoTimer.add_Tick($LXSysInfoTimer_Tick)
+# Timer End
+
+# ShowDialog Start
+$InitialFormWindowState = $LXSysInfoForm.WindowState
+# Init the OnLoad event to correct the initial state of the form
+$LXSysInfoForm.Add_Load($Form_StateCorrection_Load)
+# Clean up the control events
+$LXSysInfoForm.Add_FormClosed($Form_Cleanup_FormClosed)
+# Show the Form
+return $LXSysInfoForm.ShowDialog()
+# ShowDialog End
+
+# Script End
+}

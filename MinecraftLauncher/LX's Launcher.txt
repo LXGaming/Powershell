@@ -1,0 +1,86 @@
+# LXMCL Start
+
+# Add-Type Start
+Add-Type -AssemblyName System.Windows.Forms
+# Add-Type End
+
+# Reference Start
+$LXMCLForm = New-Object System.Windows.Forms.Form
+$LXMCLIcon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
+$LXMCLFont = New-Object System.Drawing.Font("Times New Roman","10",[System.Drawing.FontStyle]::Regular)
+# Font styles are: Regular, Bold, Italic, Underline, Strikeout
+$LXLabel = New-Object System.Windows.Forms.Label
+$LXRunButton = New-Object System.Windows.Forms.Button
+$LXCancelButton = New-Object System.Windows.Forms.Button
+# Reference End
+
+# Event Start
+$LXOpenFileDialogButton_Click = {}
+$LXRunButton_Click = {}
+$LXCancelButton_Click = {$LXMCLForm.Close()}
+# KeyEvent Start
+$LXMCLForm.KeyPreview = $True
+$LXMCLForm.Add_KeyDown({if ($_.KeyCode -eq "Enter") {}})
+$LXMCLForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$LXMCLForm.Close();}})
+# KeyEvent End
+# Event End
+
+# LXMCLForm Start
+$LXMCLForm.Text = "LXMCL"
+$LXMCLForm.Topmost = $True
+$LXMCLForm.Icon = $LXMCLIcon
+$LXMCLForm.Font = $LXMCLFont
+$LXMCLForm.MaximizeBox = $False
+$LXMCLForm.MinimizeBox = $False
+$LXMCLForm.BackColor = "DarkGray"
+$LXMCLForm.ClientSize = "500, 60"
+$LXMCLForm.StartPosition = "CenterScreen"
+$LXMCLForm.FormBorderStyle = "FixedDialog"
+# LXMCLForm End
+
+# LXLabel Start
+$LXLabel.Location = New-Object System.Drawing.Size(5,10)
+$LXLabel.Size = New-Object System.Drawing.Size(420,15)
+$LXLabel.Anchor = "Top, Left, Right"
+$LXLabel.Text = "LX's Minecraft Launcher"
+# LXLabel End
+
+# LXRunButton Start
+$LXRunButton.Location = New-Object System.Drawing.Size(175,30)
+$LXRunButton.Size = New-Object System.Drawing.Size(70,23)
+$LXRunButton.Anchor = "Top, Left"
+$LXRunButton.Text = "Run"
+$LXRunButton.FlatAppearance.BorderSize = "0"
+$LXRunButton.BackColor = "Cyan"
+$LXRunButton.FlatStyle = "Flat"
+$LXRunButton.FlatAppearance.MouseOverBackColor = "LimeGreen"
+$LXRunButton.FlatAppearance.MouseDownBackColor = "LimeGreen"
+$LXRunButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXRunButton.Add_Click($LXRunButton_Click)
+# LXRunButton End
+
+# LXCancelButton Start
+$LXCancelButton.Location = New-Object System.Drawing.Size(250,30)
+$LXCancelButton.Size = New-Object System.Drawing.Size(70,23)
+$LXCancelButton.Anchor = "Top, Right"
+$LXCancelButton.Text = "Cancel"
+$LXCancelButton.FlatAppearance.BorderSize = "0"
+$LXCancelButton.BackColor = "Cyan"
+$LXCancelButton.FlatStyle = "Flat"
+$LXCancelButton.FlatAppearance.MouseOverBackColor = "LimeGreen"
+$LXCancelButton.FlatAppearance.MouseDownBackColor = "LimeGreen"
+$LXCancelButton.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(0,255,255,255)
+$LXCancelButton.Add_Click($LXCancelButton_Click)
+# LXCancelButton End
+
+# Control Start
+$LXMCLForm.Controls.Add($LXLabel)
+$LXMCLForm.Controls.Add($LXRunButton)
+$LXMCLForm.Controls.Add($LXCancelButton)
+# Control End
+
+# ShowDialog Start
+$LXMCLForm.ShowDialog()
+# ShowDialog End
+
+# LXMCL End
