@@ -1,5 +1,5 @@
 ﻿Clear-Host
-$Base = Get-ChildItem -Directory "" -Depth 1
+$Base = Get-ChildItem -Directory "" -Depth 3
 
 ForEach ($Folder in $Base) {
   if ((Test-Path ($Folder.FullName + "\.gradle")) -And (Test-Path ($Folder.FullName + "\build.gradle")) -And (Test-Path ($Folder.FullName + "\gradlew"))) {
