@@ -1,4 +1,4 @@
-﻿$Files = Get-ChildItem "C:\Users\alexr\Desktop\Rename"
+﻿$Files = Get-ChildItem ""
 
 ForEach($File in $Files) {
   $Name = $File.CreationTime.Year.ToString() + "-";
