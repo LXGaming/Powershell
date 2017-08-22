@@ -1,5 +1,5 @@
 ﻿Clear-Host
-$GradleVersion = "4.0"
+$GradleVersion = "4.1"
 $Base = Get-ChildItem -Directory "" -Depth 3
 
 ForEach ($Folder in $Base) {
