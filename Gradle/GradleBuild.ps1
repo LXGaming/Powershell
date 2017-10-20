@@ -18,7 +18,7 @@ try {
   return;
 }
 
-Write-Host "Are you sure you want to clean Gradle projects?: " -ForegroundColor White -NoNewline;
+Write-Host "Are you sure you want to build Gradle projects?: " -ForegroundColor White -NoNewline;
 $Result = Read-Host;
 if ($Result -ne "y" -and $Result -ne "yes") {
   Write-Host "Script cancelled." -ForegroundColor Red;
@@ -33,8 +33,9 @@ ForEach ($Directory in Get-ChildItem -Directory $TargetDirectory -Depth 10) {
     continue;
   }
 
-  Remove-Item -Path $GradleDirectory -Recurse -ErrorAction SilentlyContinue;
-  Write-Host "$($Directory.Name) -> Cleaned" -ForegroundColor Cyan;
+  & $GradlePath "clean" "build" "-p" $Directory.FullName | Write-Host -ForegroundColor White;
+
+  Write-Host "$($Directory.Name) -> Built" -ForegroundColor Cyan;
 }
 
 Write-Host "Script completed." -ForegroundColor Cyan;
