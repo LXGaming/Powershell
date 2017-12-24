@@ -12,7 +12,7 @@ ForEach ($File in $Base) {
         $IsForgeMod = $True;
       }
     }
-    if ($IsForgeMod -eq $True -and $IsFixed -eq $False) {
+    if ($IsForgeMod -eq $True) {
       Write-Host "Forge Mod -" (Get-Item $File.PSParentPath).FullName;
     }
   }
