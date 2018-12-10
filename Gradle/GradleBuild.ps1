@@ -33,7 +33,7 @@ ForEach ($Directory in Get-ChildItem -Directory $TargetDirectory -Depth 10) {
     continue;
   }
 
-  & $GradlePath "clean" "build" "-p" $Directory.FullName | Write-Host -ForegroundColor White;
+  & $GradlePath "clean" "build" "--console" "verbose" "--project-dir" $Directory.FullName;
 
   Write-Host "$($Directory.Name) -> Built" -ForegroundColor Cyan;
 }

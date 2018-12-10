@@ -18,7 +18,7 @@ ForEach ($File in Get-ChildItem -Path "" -Depth 10 -File) {
 
     if ($Minecraft -and $Line.Contains("version = ")) {
       Write-Host "$($File.FullName) ($Line)" -ForegroundColor Cyan;
-      if (!$Line.Contains("1.10.2-12.18.3.2511") -and !$Line.Contains("1.12.2-14.23.2.2611")) {
+      if (!$Line.Contains("1.10.2-12.18.3.2511") -and !$Line.Contains("1.12.2-14.23.5.2768")) {
         Write-Host "Bad Forge version" -ForegroundColor Red;
       }
 

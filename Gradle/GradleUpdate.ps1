@@ -57,7 +57,7 @@ ForEach ($Directory in Get-ChildItem -Directory $TargetDirectory -Depth 10) {
     continue;
   }
 
-  & $GradlePath "wrapper" "--gradle-version" $GradleVersion "-p" $Directory.FullName | Write-Host -ForegroundColor White;
+  & $GradlePath "wrapper" "--gradle-version" $GradleVersion "--console" "verbose" "--project-dir" $Directory.FullName;
 
   Write-Host "$($Directory.Name) -> Gradle $($GradleVersion)" -ForegroundColor Cyan;
   Remove-Item -Path $GradleDirectory -Recurse -ErrorAction SilentlyContinue;
