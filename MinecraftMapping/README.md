@@ -1,5 +1,6 @@
 # Powershell - Minecraft Mapping
 Convert MCP class mappings contained in tsrg & srg files to json.
+
 Convert Notch mappings outputted by [Burger](https://github.com/mcdevs/Burger) to MCP mappings.
 
 ## Usage
